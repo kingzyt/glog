@@ -30,6 +30,8 @@ import (
 	"time"
 )
 
+var G_programTag = ""
+
 // MaxSize is the maximum size of a log file in bytes.
 var MaxSize uint64 = 1024 * 1024 * 1800
 
@@ -81,10 +83,11 @@ func shortHostname(hostname string) string {
 // logName returns a new log file name containing tag, with start time t, and
 // the name for the symlink for tag.
 func logName(tag string, t time.Time) (name, link string) {
-	name = fmt.Sprintf("%s.%s.%s.log.%s.%04d%02d%02d-%02d%02d%02d.%d",
+	name = fmt.Sprintf("%s.%s.%s.log.%s.%s.%04d%02d%02d-%02d%02d%02d.%d",
 		program,
 		host,
 		userName,
+		G_programTag,
 		tag,
 		t.Year(),
 		t.Month(),

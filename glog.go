@@ -978,6 +978,21 @@ func (l *loggingT) setV(pc uintptr) Level {
 	return 0
 }
 
+//////////////////////////////
+func (l *loggingT) getCurrentLogFileNames() (fileNames []string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	for i := 0; i < len(l.file); i++ {
+		f := l.file[i]
+		if f != nil && f.(*syncBuffer).file != nil {
+			fileNames = append(fileNames, f.(*syncBuffer).file.Name())
+		}
+	}
+	return
+}
+
+//////////////////////////////
+
 // Verbose is a boolean type that implements Infof (like Printf) etc.
 // See the documentation of V for more information.
 type Verbose bool
@@ -1177,4 +1192,8 @@ func Exitln(args ...interface{}) {
 func Exitf(format string, args ...interface{}) {
 	atomic.StoreUint32(&fatalNoStacks, 1)
 	logging.printf(fatalLog, format, args...)
+}
+
+func GetCurrentLogFileNames() []string {
+	return logging.getCurrentLogFileNames()
 }
